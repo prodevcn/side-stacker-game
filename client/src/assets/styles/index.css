@@ -1,0 +1,218 @@
+@font-face {
+  font-family: 'Basic Title';
+  src: url('../fonts/K2FyfZJVlfNNSEBXGb7TCI6oBjLz.ttf');
+}
+
+@font-face {
+  font-family: 'Aldrich Regular';
+  src: url('../fonts/Aldrich-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Aladin Regular';
+  src: url('../fonts/Aladin-Regular.ttf');
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.basic-page {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(#e66465, #9198e5);
+}
+
+.basic-board {
+  position: fixed;
+  width: 40%;
+  height: 80%;
+  border-radius: 1rem;
+  top: 10%;
+  left: 30%;
+  background: rgba(63, 63, 70, 0.8);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  overflow-y: scroll;
+}
+
+.basic-board::-webkit-scrollbar {
+  background-color: transparent;
+  width: 3px;
+  border-radius: 10px;
+}
+
+.basic-board::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.basic-board::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.basic-title {
+  position: relative;
+  text-align: center;
+  margin: 2rem;
+}
+
+.title {
+  font-family: 'Basic Title';
+  background: -webkit-linear-gradient(#e66465, #9198e5);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.title:hover {
+  text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.6);
+}
+
+.basic-content {
+  margin: 2rem;
+}
+
+#home-content {
+  font-family: 'Aldrich Regular';
+  margin: 1rem;
+}
+
+.highlight {
+  color: #9198e5;
+  font-weight: lighter;
+}
+
+.process-item {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  color: white;
+  font-weight: lighter;
+}
+
+.process-desc {
+  font-weight: lighter;
+}
+
+.process-item-logo {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 1rem;
+}
+
+.control-content {
+  margin: 2rem;
+  text-align: center;
+}
+
+.control-btn {
+  color: white;
+  background-color: #e66465;
+  border: 0;
+  padding: 1rem;
+  border-radius: 10px;
+  font-family: 'Aldrich Regular';
+}
+
+.control-btn:hover {
+  box-shadow: 2px 2px 10px rgba(230, 100, 101, 0.8);
+}
+
+.basic-container {
+  position: relative;
+  width: 80%;
+  height: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: rgb(240 249 255);
+  padding: 1rem;
+  font-family: 'Aldrich Regular';
+}
+
+.highlight-text {
+  color: #334155;
+  font-weight: bolder;
+}
+.spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.icon-spins {
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+}
+
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .basic-board {
+    width: 100%;
+    height: 80%;
+    top: 10%;
+    left: 0%;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .basic-board {
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .basic-board {
+    width: 60%;
+    height: 80%;
+    top: 10%;
+    left: 20%;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .basic-board {
+    width: 60%;
+    height: 80%;
+    top: 10%;
+    left: 20%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .basic-board {
+    width: 50%;
+    height: 80%;
+    top: 10%;
+    left: 30%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .basic-board {
+    width: 40%;
+    height: 80%;
+    top: 10%;
+    left: 30%;
+  }
+}
