@@ -1,5 +1,5 @@
-const BasicContainer = ({ children }) => {
-  return <div className="basic-container">{children}</div>
+const BasicContainer = ({ children, className }) => {
+  return <div className={`basic-container ${className}`}>{children}</div>
 }
 
 export default BasicContainer

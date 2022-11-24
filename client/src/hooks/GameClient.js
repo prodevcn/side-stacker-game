@@ -12,10 +12,10 @@ export const useGameClient = (gameId) => {
 
     const wsURL =
       process.env.NODE_ENV === 'development'
-        ? 'ws://localhost:5000/api/game/' + gameId
+        ? `ws://localhost:5000/api/game/${gameId}`
         : window.location.protocol === 'https:'
         ? 'wss'
-        : 'ws' + '://' + window.location.host + '/api/game/' + gameId
+        : 'ws' + `://${window.location.host}/api/game/${gameId}`
     ws.current = new WebSocket(wsURL)
     ws.current.addEventListener('error', (err) => {
       console.error('WebSocket Error', err)

@@ -1,17 +1,10 @@
-import { useState, useEffect, useCallback, useReducer } from 'react'
+import { useState, useEffect, useReducer, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-const initialState = {
-  gameId: null,
-  gameStatus: null,
-  self: null,
-  players: null,
-  result: null,
-  message: '',
-}
-
 const newGame = async () => {
-  const response = await fetch('/api/new-game', { method: 'POST' })
+  const response = await fetch('http://localhost:5000/api/game', {
+    method: 'POST',
+  })
   const json = await response.json()
   return json
 }
@@ -24,7 +17,7 @@ const gameStatusReducer = (state, action) => {
       return {
         ...state,
         gameId: action.payload,
-        gameStatus: 'INITIALIZED',
+        gameAppState: 'INITIALIZED',
       }
     case 'SET_CONNECT':
       return {
@@ -35,14 +28,14 @@ const gameStatusReducer = (state, action) => {
       return {
         ...state,
         players: action.players,
-        gameStatus: action.players.length >= 2 ? 'STARTED' : 'CONNECTING',
+        gameAppState: action.players.length >= 2 ? 'STARTED' : 'CONNECTING',
       }
     case 'SET_DISCONNECT':
       return {
         ...state,
         message: `Player ${action.player} disconnect!`,
       }
-    case 'SET_GAME_RESULT': {
+    case 'ENDED': {
       const winner = action.winner
       let gameResult
       if (!winner) gameResult = 'DRAW'
@@ -52,14 +45,13 @@ const gameStatusReducer = (state, action) => {
       return {
         ...state,
         result: gameResult,
-        gameStatus: 'ENDED',
+        gameAppState: 'ENDED',
       }
     }
     case 'PIECE_PLACED':
     case 'PIECE_PLACED_ERROR':
       return state
     default: {
-      console.log('gameStateReducer: Unhandled message type', action)
       return state
     }
   }
@@ -68,25 +60,30 @@ const gameStatusReducer = (state, action) => {
 export const useGameInitializer = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [gameId, setGameId] = useState(searchParams.get('gameId'))
-  const getNewGameId = useCallback(async () => {
+
+  const getNewGame = useCallback(async () => {
     if (!gameId) {
       const gameInfo = await newGame()
-      setGameId(gameInfo.game_id)
-      setSearchParams({ gameId: gameInfo.game_id })
+      setGameId(gameInfo.id)
+      setSearchParams({ gameId: gameInfo.id })
     }
   }, [gameId, setSearchParams])
 
   useEffect(() => {
-    getNewGameId()
-  }, [getNewGameId])
+    getNewGame()
+  }, [getNewGame])
 
-  return { gameId }
+  return gameId
 }
 
 export const useGameManager = (gameId, message) => {
   const [state, dispatch] = useReducer(gameStatusReducer, {
-    ...initialState,
-    gameStatus: 'WAITING',
+    gameId: undefined,
+    gameAppState: 'WAITING',
+    self: undefined,
+    players: undefined,
+    result: undefined,
+    message: '',
   })
 
   useEffect(() => {
@@ -100,9 +97,8 @@ export const useGameManager = (gameId, message) => {
       dispatch({ type: 'SET_GAME_ID', payload: gameId })
     }
   }, [gameId])
-
   return {
-    gameStatus: state.gameStatus,
+    gameAppState: state.gameAppState,
     self: state.self,
     players: state.players,
     result: state.result,

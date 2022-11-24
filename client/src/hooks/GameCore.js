@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from 'react'
 
 const initialCoreState = {
-  gameStatus: undefined,
+  gameState: undefined,
   turn: undefined,
   currentPiece: undefined,
   board: undefined,
@@ -20,20 +20,22 @@ const handleSetPlayers = (players, state) => {
     ...state,
     players,
     currentPiece: isReady ? firstPiece : undefined,
-    gameStatus: isSelfFirst ? 'WAITING_PIECE' : 'WAITING_PLAYER',
+    gameState: isSelfFirst ? 'WAITING_PIECE' : 'WAITING_PLAYER',
   }
 }
 
 const handlePlacePiece = (placement, state) => {
+  console.log('[Game Core]:[handlePlacePiece]')
   const { row, side } = placement
   const { board, currentPiece } = state
   const newBoard = placePiece(board, currentPiece, row, side)
+  console.log('[Game Core]:[handlePlacePiece]:[new board]:', newBoard)
   const availability = getRowAvailabilityFromBoard(newBoard)
   return {
     ...state,
     board: newBoard,
     availableRows: availability,
-    gameStatus: 'WAITING_SERVER',
+    gameState: 'WAITING_SERVER',
     lastMove: placement,
     lastBoard: board,
   }
@@ -48,7 +50,7 @@ const handlePiecePlacedWaitServer = (message, state) => {
   ) {
     return {
       ...state,
-      gameStatus: 'WAITING_PLAYER',
+      gameState: 'WAITING_PLAYER',
       turn: state.turn + 1,
       currentPiece: message.player === 'X' ? 'O' : 'X',
     }
@@ -74,7 +76,7 @@ const handlePiecePlacedWaitPlayer = (message, state) => {
       ...state,
       board: newBoard,
       availableRows: availability,
-      gameStatus: 'WAITING_PIECE',
+      gameState: 'WAITING_PIECE',
       lastMove: { row, side },
       turn: state.turn + 1,
       currentPiece: message.player === 'X' ? 'O' : 'X',
@@ -92,11 +94,11 @@ const handlePiecePlacedWaitPlayer = (message, state) => {
 }
 
 const handlePiecePlacedError = (message, state) => {
-  if (state.gameStatus === 'WAITING_SERVER') {
+  if (state.gameState === 'WAITING_SERVER') {
     if (message.player === state.currentPiece && message.turn === state.turn) {
       return {
         ...state,
-        gameStatus: 'WAITING_PIECE',
+        gameState: 'WAITING_PIECE',
         board: state.lastBoard,
       }
     } else {
@@ -124,9 +126,9 @@ const handlePiecePlacedError = (message, state) => {
 const handleSetMessage = (message, state) => {
   switch (message.type) {
     case 'PIECE_PLACED': {
-      if (state.gameStatus === 'WAITING_SERVER') {
+      if (state.gameState === 'WAITING_SERVER') {
         return handlePiecePlacedWaitServer(message, state)
-      } else if (state.gameStatus === 'WAITING_PLAYER') {
+      } else if (state.gameState === 'WAITING_PLAYER') {
         return handlePiecePlacedWaitPlayer(message, state)
       } else {
         console.log(
@@ -158,6 +160,8 @@ export const placePiece = (board, piece, row, side) => {
       break
     }
   }
+
+  return [...board.slice(0, row), boardRow, ...board.slice(row + 1)]
 }
 
 export const getRowAvailabilityFromBoard = (board) => {
@@ -189,7 +193,6 @@ const gameCoreReducer = (state, action) => {
       return handleSetMessage(message, state)
     }
     default: {
-      console.log('Core Reducer: unhandled case', action)
       return state
     }
   }
@@ -224,20 +227,20 @@ export const useGameCore = (size, self, players, message, sendMessage) => {
   }, [message])
 
   useEffect(() => {
-    if (state.gameStatus !== 'WAIT_SERVER') return
+    if (state.gameState !== 'WAITING_SERVER') return
     sendMessage({
       type: 'piece-placement',
       row: state.lastMove.row,
       side: state.lastMove.side,
     })
-  }, [state.lastMove, state.gameStatus, sendMessage])
+  }, [state.lastMove, state.gameState, sendMessage])
 
   const placePiece = useCallback((row, side) => {
     dispatch({ type: 'PLACE_PIECE', payload: { row, side } })
   }, [])
 
   return {
-    gameStatus: state.gameStatus,
+    gameState: state.gameState,
     board: state.board,
     placePiece,
     availableRows: state.availableRows,

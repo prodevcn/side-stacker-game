@@ -13,15 +13,16 @@ const LinkContainer = () => {
 
   return (
     <BasicContainer>
-      <h3>New game link: please share link to the player</h3>
-      <span
+      <h4 className="highlight-text">
+        New game link: please share link to the player
+      </h4>
+      <input
         className="highlight-area"
         onClick={handleCopy}
         ref={setLink}
-        role="presentation"
-      >
-        {window.location.href}
-      </span>
+        value={window.location.href}
+        readOnly
+      />
       <span className="notify-content">
         {copied ? 'Copied in clipboard' : 'Click to copy'}
       </span>

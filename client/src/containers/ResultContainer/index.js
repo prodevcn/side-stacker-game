@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom'
 import BasicContainer from '../BasicContainer'
+import Win from '../../assets/images/win.png'
+import Lose from '../../assets/images/lose.png'
+import Draw from '../../assets/images/draw.png'
+
+const avatars = {
+  win: Win,
+  lost: Lose,
+  draw: Draw,
+}
 
 const ResultContainer = ({ result }) => {
-  const avatars = {
-    draw: 'https://avatars.dicebear.com/api/big-smile/1.svg?mouth=unimpressed',
-    lost: 'https://avatars.dicebear.com/api/big-smile/1.svg?mouth=openSad',
-    win: 'https://avatars.dicebear.com/api/big-smile/1.svg',
-  }
-
   const messages = {
     draw: `It's a draw`,
     lost: 'You lost',
@@ -21,7 +24,7 @@ const ResultContainer = ({ result }) => {
         alt="Result Avatar"
         className="result-avatar"
       />
-      <span className="highlight-area">{messages[result.toLowerCase()]}</span>
+      <span className="result-text">{messages[result.toLowerCase()]}</span>
       <Link
         to={'/game'}
         onClick={() => (window.location.href = '/game')}

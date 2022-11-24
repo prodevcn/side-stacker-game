@@ -1,19 +1,20 @@
 import { useNavigate } from 'react-router-dom'
+import { ProcessDescription } from '../../lib/constant'
 import Process1 from '../../assets/images/process1.png'
 import Process2 from '../../assets/images/process2.png'
 import Process3 from '../../assets/images/process3.png'
 import Process4 from '../../assets/images/process4.png'
-import { ProcessDescription } from '../../lib/constant'
+
+const ProcessLogos = [Process1, Process2, Process3, Process4]
 
 const Home = () => {
-  const ProcessLogos = [Process1, Process2, Process3, Process4]
   const navigate = useNavigate()
   const handleClick = () => {
     navigate('/game')
   }
   return (
     <div id="home-content">
-      <h3 className="highlight">Playing with friends is easy:</h3>
+      <h4 className="highlight">Playing with friends is easy:</h4>
       <div className="process-content">
         <div id="process-description">
           {ProcessDescription.map((item, index) => (

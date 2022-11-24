@@ -1,12 +1,12 @@
 const Piece = ({ square }) => {
-  const classMap = {
+  const styles = {
     X: 'cross-token',
     O: 'circle-token',
   }
 
   return (
     <div
-      className={`${square ? classMap[square] : 'bg-amber-50'} board-piece`}
+      className={`${square ? styles[square] : 'empty-piece'} board-piece`}
     ></div>
   )
 }

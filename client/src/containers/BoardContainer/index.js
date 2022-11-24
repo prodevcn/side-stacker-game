@@ -8,18 +8,18 @@ const BoardContainer = ({
   placePiece,
   piece,
   availableRows,
-  gameStatus,
+  gameState,
 }) => {
   return (
-    <div className="flex flex-col">
-      <BoardMsg gameState={gameStatus} />
-      <div className="board">
+    <div className="basic-container sub-board">
+      <BoardMsg gameState={gameState} />
+      <div className="game-board">
         {board.map((r, ri) => (
           <Fragment key={ri}>
             <BoardBtn
               piece={piece}
               placePiece={placePiece.bind(null, ri, 'L')}
-              enabled={gameStatus === 'awaiting-piece' && availableRows[ri]}
+              enabled={gameState === 'WAITING_PIECE' && availableRows[ri]}
             />
             {r.map((s, si) => {
               return <Piece square={s} key={ri * r.length + si} />
@@ -27,7 +27,7 @@ const BoardContainer = ({
             <BoardBtn
               piece={piece}
               placePiece={placePiece.bind(null, ri, 'R')}
-              enabled={gameStatus === 'awaiting-piece' && availableRows[ri]}
+              enabled={gameState === 'WAITING_PIECE' && availableRows[ri]}
             />
           </Fragment>
         ))}

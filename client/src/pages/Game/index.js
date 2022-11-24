@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useGameManager, useGameInitializer } from '../../hooks/GameManager'
 import { useGameClient } from '../../hooks/GameClient'
 import { useGameCore } from '../../hooks/GameCore'
@@ -9,9 +8,9 @@ import ResultContainer from '../../containers/ResultContainer'
 import ErrorContainer from '../../containers/ErrorContainer'
 
 const Game = () => {
-  const { gameId } = useGameInitializer()
+  const gameId = useGameInitializer()
   const { serverMessage, sendMessage } = useGameClient(gameId)
-  const { gameStatus, result, self, players, message } = useGameManager(
+  const { gameAppState, result, self, players } = useGameManager(
     gameId,
     serverMessage
   )
@@ -22,26 +21,8 @@ const Game = () => {
     serverMessage,
     sendMessage
   )
-  const gameManagerProps = {
-    gameStatus,
-    result,
-    self,
-    message,
-    gameId,
-  }
 
-  useEffect(() => {
-    console.log('Got Server Message', JSON.stringify(serverMessage))
-    console.log(gameId)
-  }, [serverMessage])
-
-  return (
-    <GameUI gameManagerProps={gameManagerProps} gameProps={gameCoreProps} />
-  )
-}
-
-const GameUI = ({ gameManagerProps, gameCoreProps }) => {
-  switch (gameManagerProps.gameStatus) {
+  switch (gameAppState) {
     case 'WAITING':
     case 'INITIALIZED':
       return <WaitContainer />
@@ -50,7 +31,7 @@ const GameUI = ({ gameManagerProps, gameCoreProps }) => {
     case 'STARTED':
       return <BoardContainer {...gameCoreProps} />
     case 'ENDED':
-      return <ResultContainer result={gameManagerProps.result} />
+      return <ResultContainer result={result} />
     default:
       return <ErrorContainer />
   }

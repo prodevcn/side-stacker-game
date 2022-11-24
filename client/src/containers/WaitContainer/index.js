@@ -4,7 +4,7 @@ import Spinner from '../../components/Spinner'
 const WaitContainer = () => {
   return (
     <BasicContainer>
-      <h2 className="highlight-text">Creating a new game!</h2>
+      <h4 className="highlight-text">Creating a new game!</h4>
       <Spinner className="spinner" />
     </BasicContainer>
   )

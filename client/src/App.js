@@ -3,11 +3,9 @@ import BasicPage from './layouts/BasicPage'
 
 const App = () => {
   return (
-    <div id="side-stacker-game">
-      <BasicPage>
-        <Outlet />
-      </BasicPage>
-    </div>
+    <BasicPage>
+      <Outlet />
+    </BasicPage>
   )
 }
 

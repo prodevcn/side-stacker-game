@@ -7,13 +7,13 @@ module.exports = {
     hot: true,
     open: true,
     historyApiFallback: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
-        router: () => 'http://localhost:5000',
-        logLevel: 'debug' /*optional*/,
-      },
-    },
+    // proxy: {
+    //   '/api/**': {
+    //     target: 'http://localhost:8080',
+    //     router: () => 'http://localhost:5000',
+    //     logLevel: 'debug' /*optional*/,
+    //   },
+    // },
   },
   devtool: 'cheap-module-source-map',
   plugins: [
