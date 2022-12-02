@@ -8,7 +8,7 @@ import ResultContainer from '../../containers/ResultContainer'
 import ErrorContainer from '../../containers/ErrorContainer'
 
 const Game = () => {
-  const gameId = useGameInitializer()
+  const { gameId, withBot } = useGameInitializer()
   const { serverMessage, sendMessage } = useGameClient(gameId)
   const { gameAppState, result, self, players } = useGameManager(
     gameId,
@@ -31,7 +31,7 @@ const Game = () => {
     case 'STARTED':
       return <BoardContainer {...gameCoreProps} />
     case 'ENDED':
-      return <ResultContainer result={result} />
+      return <ResultContainer result={result} withBot={withBot} />
     default:
       return <ErrorContainer />
   }

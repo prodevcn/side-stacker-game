@@ -144,6 +144,11 @@ body {
   padding: 1rem;
   border-radius: 10px;
   font-family: 'Desc';
+  margin: 1rem;
+}
+
+.blue-btn {
+  background-color: #9198e5;
 }
 
 .control-btn:hover {

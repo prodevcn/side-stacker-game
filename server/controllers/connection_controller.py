@@ -3,6 +3,7 @@ import uuid
 from json import dumps, loads
 from libs.game_events import *
 from libs.game_core import GameCore
+from libs.bot import Bot
 
 
 class GameConnectionController:
@@ -10,13 +11,14 @@ class GameConnectionController:
         self.games = {}
         self.log = logger
 
-    def new_game(self):
+    def new_game(self, with_bot = False):
         game_id = str(uuid.uuid4())
         self.log.debug('[gId: %s] A new game was created' % game_id)
         game_instance = self.create_game_instance(game_id)
         self.games[game_id] = {
             'game': game_instance,
             'players': {},
+            'with_bot': with_bot
         }
 
         return game_instance
@@ -36,6 +38,16 @@ class GameConnectionController:
 
         ss = game['game']
         ss.connect(player_id)
+        
+        """ for bot connection """
+        if game['with_bot']:
+            bot_id = str(uuid.uuid4()).split('_')[-1]
+            bot = Bot(ss, bot_id)
+            game['players'][bot_id] = bot
+            
+            ss.add_observer(bot.process_game_events)
+            ss.connect(bot_id)
+            
 
     def handle_client_message(self, game_id, player_id, message):
         json = loads(message)

@@ -1,10 +1,13 @@
 import { useState, useEffect, useReducer, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-const newGame = async () => {
-  const response = await fetch('http://localhost:5000/api/game', {
-    method: 'POST',
-  })
+const newGame = async (withBot = undefined) => {
+  const response = await fetch(
+    `http://localhost:5000/api/game${withBot ? '?bot=True' : ''}`,
+    {
+      method: 'POST',
+    }
+  )
   const json = await response.json()
   return json
 }
@@ -60,20 +63,26 @@ const gameStatusReducer = (state, action) => {
 export const useGameInitializer = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [gameId, setGameId] = useState(searchParams.get('gameId'))
+  const withBot = searchParams.get('bot')
 
   const getNewGame = useCallback(async () => {
     if (!gameId) {
-      const gameInfo = await newGame()
+      const gameInfo = await newGame(withBot)
       setGameId(gameInfo.id)
-      setSearchParams({ gameId: gameInfo.id })
+      setSearchParams(
+        Object.assign(
+          { gameId: gameInfo.id },
+          withBot ? { bot: withBot } : null
+        )
+      )
     }
-  }, [gameId, setSearchParams])
+  }, [gameId, withBot, setSearchParams])
 
   useEffect(() => {
     getNewGame()
   }, [getNewGame])
 
-  return gameId
+  return { gameId, withBot }
 }
 
 export const useGameManager = (gameId, message) => {

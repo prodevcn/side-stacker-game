@@ -10,7 +10,7 @@ const avatars = {
   draw: Draw,
 }
 
-const ResultContainer = ({ result }) => {
+const ResultContainer = ({ result, withBot }) => {
   const messages = {
     draw: `It's a draw`,
     lost: 'You lost',
@@ -26,8 +26,10 @@ const ResultContainer = ({ result }) => {
       />
       <span className="result-text">{messages[result.toLowerCase()]}</span>
       <Link
-        to={'/game'}
-        onClick={() => (window.location.href = '/game')}
+        to={`/game${withBot ? '?bot=true' : ''}`}
+        onClick={() =>
+          (window.location.href = `/game${withBot ? '?bot=true' : ''}`)
+        }
         className="new-game-button"
       >
         Try again?

@@ -12,6 +12,11 @@ const Home = () => {
   const handleClick = () => {
     navigate('/game')
   }
+
+  const handleClickBot = () => {
+    navigate('/game?bot=true')
+  }
+
   return (
     <div id="home-content">
       <h4 className="highlight">Playing with friends is easy:</h4>
@@ -31,6 +36,9 @@ const Home = () => {
         <div className="control-content">
           <button className="control-btn" onClick={handleClick}>
             Start Game
+          </button>
+          <button className="control-btn blue-btn" onClick={handleClickBot}>
+            Play with Bot
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, jsonify, send_from_directory, abort
+from flask import Flask, jsonify, send_from_directory, abort, request
 from flask_sock import Sock
 from flask_cors import CORS
 from controllers.connection_controller import GameConnectionController
@@ -16,8 +16,11 @@ db_controller = DBController()
 
 @app.route('/api/game', methods=['POST'])
 def create_game():
-    game_instance = game_connection_controller.new_game()
+    with_bot = request.args.get('bot', False)
+    
+    game_instance = game_connection_controller.new_game(with_bot)
     db_controller.manage_game(game_instance)
+    
     game_id = game_instance.id
     return jsonify({'id': game_id})
 
