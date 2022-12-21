@@ -23,6 +23,7 @@ export const useGameClient = (gameId) => {
     })
     ws.current.addEventListener('message', (msg) => {
       const msgData = JSON.parse(msg.data)
+      console.log('[GameClient]:[new message]:', msgData)
       flushSync(() => setServerMessage(msgData))
     })
   }, [gameId])

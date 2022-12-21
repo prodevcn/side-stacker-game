@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useGameManager, useGameInitializer } from '../../hooks/GameManager'
 import { useGameClient } from '../../hooks/GameClient'
 import { useGameCore } from '../../hooks/GameCore'
@@ -21,6 +22,19 @@ const Game = () => {
     serverMessage,
     sendMessage
   )
+
+  useEffect(() => {
+    const unloadCallback = (event) => {
+      event.preventDefault()
+      sendMessage({
+        type: 'disconnect-player',
+        player_id: localStorage.getItem('playerId'),
+      })
+    }
+
+    window.addEventListener('beforeunload', unloadCallback)
+    return () => window.removeEventListener('beforeunload', unloadCallback)
+  }, [sendMessage])
 
   switch (gameAppState) {
     case 'WAITING':

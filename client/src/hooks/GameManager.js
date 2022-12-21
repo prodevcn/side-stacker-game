@@ -23,6 +23,7 @@ const gameStatusReducer = (state, action) => {
         gameAppState: 'INITIALIZED',
       }
     case 'SET_CONNECT':
+      localStorage.setItem('playerId', action.playerId)
       return {
         ...state,
         self: { piece: action.player, turn: action.turn },
@@ -75,6 +76,8 @@ export const useGameInitializer = () => {
           withBot ? { bot: withBot } : null
         )
       )
+    } else {
+      console.log('[useGameInitializer]:[game_id exists]:', gameId)
     }
   }, [gameId, withBot, setSearchParams])
 

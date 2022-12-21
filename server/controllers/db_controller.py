@@ -20,6 +20,15 @@ class DBController:
     def manage_game(self, game_instance: GameCore):
         game_instance.add_observer(self.process_game_events)
         self.create_game(game_instance.id)
+    
+    def get_game(self, game_id):
+        with Connection(self.file) as conn:
+            cur = conn.cursor()
+            game = conn.execute('select * from game where id = ?', (game_id))
+            cur.close()
+            if game is None:
+                return None
+            return game
 
     def create_game(self, game_id):
         with Connection(self.file) as conn:

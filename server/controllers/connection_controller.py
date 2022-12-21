@@ -13,7 +13,7 @@ class GameConnectionController:
 
     def new_game(self, with_bot = False):
         game_id = str(uuid.uuid4())
-        self.log.debug('[gId: %s] A new game was created' % game_id)
+        self.log.info('[gId: %s] A new game was created' % game_id)
         game_instance = self.create_game_instance(game_id)
         self.games[game_id] = {
             'game': game_instance,
@@ -27,6 +27,11 @@ class GameConnectionController:
         return game_id in self.games
 
     def add_connection(self, game_id, ws, player_id):
+        
+        print('[add_connection]:[game_id]', game_id)
+        print('[add_connection]:[player_id]', player_id)
+        print('[add_connection]:[ws]', ws)
+        
         if game_id not in self.games:
             raise ValueError('Invalid game_id')
 
@@ -35,6 +40,8 @@ class GameConnectionController:
 
         game = self.games[game_id]
         game['players'][player_id] = ws
+        
+        print('[add_connection]:[game]:', game)
 
         ss = game['game']
         ss.connect(player_id)
@@ -51,6 +58,7 @@ class GameConnectionController:
 
     def handle_client_message(self, game_id, player_id, message):
         json = loads(message)
+        print('[GameConnectionController]:[handle_client_message]', json)
         if 'type' not in json:
             self.log.error(
                 "json message doesn't have a type field: %s" % message)
@@ -61,6 +69,11 @@ class GameConnectionController:
                 '[gId: %s][pId: %s] A player placed a piece' % (game_id, player_id))
             ss = self.games[game_id]['game']
             ss.place_piece(player_id, json['row'], json['side'])
+        elif json['type'] == 'disconnect-player':
+            players = self.games[game_id]['players']
+            players.pop(json['player_id'])
+            print('----------', players)
+            self.games[game_id]['players'] = players
         else:
             self.log.warning("Unable to handle message of unknown type '%s' of message: '%s'" % (
                 json['type'], message))
@@ -93,6 +106,7 @@ class GameConnectionController:
         ws = game['players'][e.player_id]
         ws.send(dumps({
             'type': 'SET_CONNECT',
+            'playerId': e.player_id,
             'player': e.player,
             'turn': e.turn_order
         }))
