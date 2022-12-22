@@ -44,6 +44,7 @@ class GameConnectionController:
         print('[add_connection]:[game]:', game)
 
         ss = game['game']
+        print('=========game player==========', ss.players)
         ss.connect(player_id)
         
         """ for bot connection """
@@ -70,10 +71,11 @@ class GameConnectionController:
             ss = self.games[game_id]['game']
             ss.place_piece(player_id, json['row'], json['side'])
         elif json['type'] == 'disconnect-player':
-            players = self.games[game_id]['players']
-            players.pop(json['player_id'])
-            print('----------', players)
-            self.games[game_id]['players'] = players
+            # players = self.games[game_id]['players']
+            # players.pop(json['player_id'])
+            # self.games[game_id]['players'] = players
+            # print('===================>>>>>', self.games[game_id]['players'])
+            self.close_connection(game_id, player_id)
         else:
             self.log.warning("Unable to handle message of unknown type '%s' of message: '%s'" % (
                 json['type'], message))
@@ -112,7 +114,7 @@ class GameConnectionController:
         }))
 
     def on_disconnect(self, e: PlayerDisconnected):
-        game = self.game[e.game_id]
+        game = self.games[e.game_id]
         for (_, ws) in game['players'].items():
             ws.send(dumps({
                 'type': 'SET_DISCONNECT',
