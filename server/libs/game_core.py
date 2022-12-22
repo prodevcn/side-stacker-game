@@ -16,14 +16,13 @@ class GameCore:
 
     def connect(self, player_id: str) -> Optional[Tuple[str, int]]:
         if len(self.players) >= 2:
-            print("game is full.............!")
+            print('[GameCore]:[connect]:Game is full!')
             return None
         if player_id in self.players:
             return None
         if len(self.players) == 0:
             self.players[player_id] = ('X' if random.randint(
                 0, 1) == 0 else 'O', random.randint(0, 1))
-            print('=================', self.players)
         else:
             p1 = next(iter(self.players.values()))
             p2_pieces = 'O' if p1[0] == 'X' else 'X'

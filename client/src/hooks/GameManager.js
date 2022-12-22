@@ -23,9 +23,10 @@ const gameStatusReducer = (state, action) => {
         gameAppState: 'INITIALIZED',
       }
     case 'SET_CONNECT':
-      localStorage.setItem('playerId', action.playerId)
+      // localStorage.setItem('playerId', action.playerId)
       return {
         ...state,
+        playerId: action.playerId,
         self: { piece: action.player, turn: action.turn },
       }
     case 'SET_PLAYER_INFO':
@@ -45,6 +46,7 @@ const gameStatusReducer = (state, action) => {
       if (!winner) gameResult = 'DRAW'
       else if (winner === state.self.piece) gameResult = 'WIN'
       else gameResult = 'LOST'
+      localStorage.removeItem('playerId')
 
       return {
         ...state,
@@ -94,6 +96,7 @@ export const useGameManager = (gameId, message) => {
     gameAppState: 'WAITING',
     self: undefined,
     players: undefined,
+    playerId: undefined,
     result: undefined,
     message: '',
   })

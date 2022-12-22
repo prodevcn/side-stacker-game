@@ -27,37 +27,29 @@ def create_game():
   
 @app.route('/api/game/<string:game_id>', methods=['GET'])
 def get_game(game_id):
-    print(game_id)
     game = db_controller.get_game(game_id)
-    print(game)
     return jsonify({'id': game_id})
     
 
 
-@sock.route('/api/game/<game_id>')
-def connect_socket(ws, game_id):
+@sock.route('/api/game/<game_id>/<pre_player_id>')
+def connect_socket(ws, game_id, pre_player_id):
     if game_id is None or not game_connection_controller.exist_game(game_id):
         return jsonify(abort(404, 'Game not found'))
-
-    player_id = str(uuid.uuid4()).split('-')[-1]
+    
+    player_id = pre_player_id if pre_player_id != "new" else str(uuid.uuid4()).split('-')[-1]
     
     print('[connect_socket]:[player_id]:', player_id)
     
     try:
-        print('[connect_socket]:[game_id]:', game_id)
-        print('[connect_socket]:[player_id]:', player_id)
-        
         game_connection_controller.add_connection(game_id, ws, player_id)
+            
     except ValueError:
         return jsonify(abort(404, 'Game not found'))
 
     while True:
         try:
             data = ws.receive()
-            
-            print('[connect_socket]:[while True]:[game_id]:', game_id)
-            print('[connect_socket]:[while True]:[player_id]:', player_id)
-            print('[connect_socket]:[while True]:[ws.receive]:', data)
             
             game_connection_controller.handle_client_message(
                 game_id, player_id, data)

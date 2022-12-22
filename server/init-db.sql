@@ -1,7 +1,15 @@
 CREATE TABLE IF NOT EXISTS game (
   id TEXT PRIMARY KEY,
   winner TEXT DEFAULT NULL,
+  status TEXT DEFAULT "waiting",
   start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS player (
+  id TEXT PRIMARY KEY,
+  piece TEXT,
+  game_id TEXT,
+  FOREIGN KEY(game_id) REFERENCES game(id)
 );
 
 CREATE TABLE IF NOT EXISTS movement (

@@ -28,10 +28,6 @@ class GameConnectionController:
 
     def add_connection(self, game_id, ws, player_id):
         
-        print('[add_connection]:[game_id]', game_id)
-        print('[add_connection]:[player_id]', player_id)
-        print('[add_connection]:[ws]', ws)
-        
         if game_id not in self.games:
             raise ValueError('Invalid game_id')
 
@@ -44,7 +40,6 @@ class GameConnectionController:
         print('[add_connection]:[game]:', game)
 
         ss = game['game']
-        print('=========game player==========', ss.players)
         ss.connect(player_id)
         
         """ for bot connection """
@@ -71,11 +66,9 @@ class GameConnectionController:
             ss = self.games[game_id]['game']
             ss.place_piece(player_id, json['row'], json['side'])
         elif json['type'] == 'disconnect-player':
-            # players = self.games[game_id]['players']
-            # players.pop(json['player_id'])
-            # self.games[game_id]['players'] = players
-            # print('===================>>>>>', self.games[game_id]['players'])
-            self.close_connection(game_id, player_id)
+            self.games[game_id]['players'].pop(json['player_id'])
+            self.games[game_id]['game'].players.pop(json['player_id'])
+            # self.close_connection(game_id, player_id)
         else:
             self.log.warning("Unable to handle message of unknown type '%s' of message: '%s'" % (
                 json['type'], message))
