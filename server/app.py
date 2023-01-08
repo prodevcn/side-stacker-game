@@ -38,11 +38,12 @@ def connect_socket(ws, game_id, pre_player_id):
         return jsonify(abort(404, 'Game not found'))
     
     player_id = pre_player_id if pre_player_id != "new" else str(uuid.uuid4()).split('-')[-1]
+    type = "new" if pre_player_id == "new" else "rejoin"
     
     print('[connect_socket]:[player_id]:', player_id)
     
     try:
-        game_connection_controller.add_connection(game_id, ws, player_id)
+        game_connection_controller.add_connection(game_id, ws, player_id, type)
             
     except ValueError:
         return jsonify(abort(404, 'Game not found'))
@@ -54,7 +55,7 @@ def connect_socket(ws, game_id, pre_player_id):
             game_connection_controller.handle_client_message(
                 game_id, player_id, data)
         except ConnectionError:
-            app.logger.warning('[gId: %s][pId: %s] A player disconnected')
+            app.logger.warning('[gId: %s][pId: %s] A player disconnected', game_id, player_id)
             game_connection_controller.close_connection(game_id, player_id)
 
 

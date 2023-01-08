@@ -46,7 +46,7 @@ const gameStatusReducer = (state, action) => {
       if (!winner) gameResult = 'DRAW'
       else if (winner === state.self.piece) gameResult = 'WIN'
       else gameResult = 'LOST'
-      localStorage.removeItem('playerId')
+      localStorage.clear()
 
       return {
         ...state,
@@ -116,6 +116,7 @@ export const useGameManager = (gameId, message) => {
     gameAppState: state.gameAppState,
     self: state.self,
     players: state.players,
+    playerId: state.playerId,
     result: state.result,
     message: state.message,
   }

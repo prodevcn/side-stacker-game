@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useGameManager, useGameInitializer } from '../../hooks/GameManager'
 import { useGameClient } from '../../hooks/GameClient'
 import { useGameCore } from '../../hooks/GameCore'
@@ -26,13 +26,14 @@ const Game = () => {
   useEffect(() => {
     const unloadCallback = (event) => {
       event.preventDefault()
-      localStorage.setItem('test', 'test')
       if (gameAppState === 'STARTED') {
-        localStorage.setItem('status', 'pause')
+        localStorage.setItem('playerId', playerId)
         sendMessage({
           type: 'disconnect-player',
           player_id: localStorage.getItem('playerId'),
         })
+      } else {
+        localStorage.clear()
       }
     }
 
@@ -40,35 +41,36 @@ const Game = () => {
     return () => window.removeEventListener('beforeunload', unloadCallback)
   }, [sendMessage, playerId, gameAppState])
 
-  // switch (gameAppState) {
-  //   case 'WAITING':
-  //   case 'INITIALIZED':
-  //     return <WaitContainer />
-  //   case 'CONNECTING':
-  //     return <LinkContainer />
-  //   case 'STARTED':
-  //     return <BoardContainer {...gameCoreProps} />
-  //   case 'ENDED':
-  //     return <ResultContainer result={result} withBot={withBot} />
-  //   default:
-  //     return <ErrorContainer />
-  // }
-  return (
-    <Fragment>
-      {gameAppState === 'WAITING' || gameAppState === 'INITIALIZED' ? (
-        <WaitContainer />
-      ) : gameAppState === 'CONNECTING' ? (
-        <LinkContainer />
-      ) : gameAppState === 'STARTED' ? (
-        <BoardContainer {...gameCoreProps} />
-      ) : gameAppState === 'ENDED' ? (
-        <ResultContainer result={result} withBot={withBot} />
-      ) : (
-        <ErrorContainer />
-      )}
-      <h1>{gameAppState}</h1>
-    </Fragment>
-  )
+  switch (gameAppState) {
+    case 'WAITING':
+    case 'INITIALIZED':
+      return <WaitContainer />
+    case 'CONNECTING':
+      return <LinkContainer />
+    case 'STARTED':
+      return <BoardContainer {...gameCoreProps} />
+    case 'ENDED':
+      return <ResultContainer result={result} withBot={withBot} />
+    default:
+      return <ErrorContainer />
+  }
+  // return (
+  //   <Fragment>
+  //     {gameAppState === 'WAITING' || gameAppState === 'INITIALIZED' ? (
+  //       <WaitContainer />
+  //     ) : gameAppState === 'CONNECTING' ? (
+  //       <LinkContainer />
+  //     ) : gameAppState === 'STARTED' ? (
+  //       <BoardContainer {...gameCoreProps} />
+  //     ) : gameAppState === 'ENDED' ? (
+  //       <ResultContainer result={result} withBot={withBot} />
+  //     ) : (
+  //       <ErrorContainer />
+  //     )}
+  //     <h6>GameAppState: {gameAppState}</h6>
+  //     <h6>PlayerId: {playerId}</h6>
+  //   </Fragment>
+  // )
 }
 
 export default Game

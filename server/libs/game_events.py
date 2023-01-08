@@ -7,11 +7,12 @@ class GameEvent:
 
 
 class PlayerConnected(GameEvent):
-    def __init__(self, game_id: str, player_id: str, player: Literal['X', 'O'], turn_order: Literal[0, 1]):
+    def __init__(self, game_id: str, player_id: str, join_type:str, player: Literal['X', 'O'], turn_order: Literal[0, 1]):
         super().__init__(game_id)
         self.player_id = player_id
         self.player = player
         self.turn_order = turn_order
+        self.join_type = join_type
 
 
 class PlayerDisconnected(GameEvent):
@@ -47,3 +48,9 @@ class PlayerInfo(GameEvent):
     def __init__(self, game_id: str, players):
         super().__init__(game_id)
         self.players = players
+
+class PlayerRejoin(GameEvent):
+    def __init__(self, game_id: str, board, turn):
+        super().__init__(game_id)
+        self.board = board
+        self.turn = turn

@@ -67,4 +67,5 @@ class DBController:
         elif isinstance(e, PiecePlaced):
             self.add_move(e.game_id, e.row, e.side, e.player, e.turn)
         elif isinstance(e, PlayerConnected):
-            self.add_player(e.game_id, e.player_id, e.player)
+            if(e.join_type == "new"):
+                self.add_player(e.game_id, e.player_id, e.player)

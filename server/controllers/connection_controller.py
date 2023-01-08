@@ -26,7 +26,7 @@ class GameConnectionController:
     def exist_game(self, game_id):
         return game_id in self.games
 
-    def add_connection(self, game_id, ws, player_id):
+    def add_connection(self, game_id, ws, player_id, type):
         
         if game_id not in self.games:
             raise ValueError('Invalid game_id')
@@ -40,7 +40,7 @@ class GameConnectionController:
         print('[add_connection]:[game]:', game)
 
         ss = game['game']
-        ss.connect(player_id)
+        ss.connect(player_id, type)
         
         """ for bot connection """
         if game['with_bot']:
@@ -49,7 +49,7 @@ class GameConnectionController:
             game['players'][bot_id] = bot
             
             ss.add_observer(bot.process_game_events)
-            ss.connect(bot_id)
+            ss.connect(bot_id, type)
             
 
     def handle_client_message(self, game_id, player_id, message):
@@ -66,8 +66,10 @@ class GameConnectionController:
             ss = self.games[game_id]['game']
             ss.place_piece(player_id, json['row'], json['side'])
         elif json['type'] == 'disconnect-player':
-            self.games[game_id]['players'].pop(json['player_id'])
-            self.games[game_id]['game'].players.pop(json['player_id'])
+            self.log.debug("[gId: %s][pId: %s]:[Player disconnect !]", game_id, player_id)
+            # self.games[game_id]['players'].pop(json['player_id'])
+            # self.games[game_id]['game'].players.pop(json['player_id'])
+            
             # self.close_connection(game_id, player_id)
         else:
             self.log.warning("Unable to handle message of unknown type '%s' of message: '%s'" % (
@@ -95,6 +97,8 @@ class GameConnectionController:
             self.on_piece_placed(e)
         elif isinstance(e, PiecePlacedError):
             self.on_piece_placed_error(e)
+        elif isinstance(e, PlayerRejoin):
+            self.on_player_rejoin(e)
 
     def on_connect(self, e: PlayerConnected):
         game = self.games[e.game_id]
@@ -150,3 +154,12 @@ class GameConnectionController:
             'type': 'PIECE_PLACED_ERROR',
             'turn': e.turn
         }))
+        
+    def on_player_rejoin(self, e: PlayerRejoin):
+        game = self.games[e.game_id]
+        for (_, ws) in game['players'].items():
+            ws.send(dumps({
+              'type': 'PLAYER_REJOIN',
+              'board': e.board,
+              'turn': e.turn
+            }))

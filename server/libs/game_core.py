@@ -14,29 +14,43 @@ class GameCore:
         self.turn = 0
         self.player_turn = None
 
-    def connect(self, player_id: str) -> Optional[Tuple[str, int]]:
-        if len(self.players) >= 2:
-            print('[GameCore]:[connect]:Game is full!')
-            return None
-        if player_id in self.players:
-            return None
-        if len(self.players) == 0:
-            self.players[player_id] = ('X' if random.randint(
-                0, 1) == 0 else 'O', random.randint(0, 1))
-        else:
-            p1 = next(iter(self.players.values()))
-            p2_pieces = 'O' if p1[0] == 'X' else 'X'
-            p2_turn = 0 if p1[1] == 1 else 1
-            self.players[player_id] = (p2_pieces, p2_turn)
-            self.turn = 0
-            self.player_turn = p1[0] if p1[1] < p2_turn else p2_pieces
+    def connect(self, player_id: str, type: str) -> Optional[Tuple[str, int]]:
+        print("========================", type)
+        if type == "rejoin":
+            print('[gId: %s]:[pId: %s]:[Rejoining]', self.id, player_id)
+            self.notify(PlayerConnected(
+                        self.id, player_id, type, *self.players[player_id]))
+            print("[gId: %s]:[pId: %s]:[Connected ************ notified!]", self.id, player_id)
+            self.notify(PlayerInfo(
+                self.id, [{'piece': p, 'turn': t} for (p, t) in self.players.values()]))
+            print("[gId: %s]:[pId: %s]:[PlayerInfo ************ notified!]", self.id, player_id)
+            self.notify(PlayerRejoin(self.id, self.board, self.turn))
+            print("[gId: %s]:[pId: %s]:[Rejoining]", self.id, player_id)
+            return self.players[player_id]
+        elif type == "new":
+            if len(self.players) >= 2:
+                print('[GameCore]:[connect]:Game is full!')
+                return None
 
-        self.notify(PlayerConnected(
-            self.id, player_id, *self.players[player_id]))
-        self.notify(PlayerInfo(
-            self.id, [{'piece': p, 'turn': t} for (p, t) in self.players.values()]))
+            if player_id in self.players:
+                return None
+            if len(self.players) == 0:
+                self.players[player_id] = ('X' if random.randint(
+                    0, 1) == 0 else 'O', random.randint(0, 1))
+            else:
+                p1 = next(iter(self.players.values()))
+                p2_pieces = 'O' if p1[0] == 'X' else 'X'
+                p2_turn = 0 if p1[1] == 1 else 1
+                self.players[player_id] = (p2_pieces, p2_turn)
+                self.turn = 0
+                self.player_turn = p1[0] if p1[1] < p2_turn else p2_pieces
 
-        return self.players[player_id]
+            self.notify(PlayerConnected(
+                self.id, player_id, type, *self.players[player_id]))
+            self.notify(PlayerInfo(
+                self.id, [{'piece': p, 'turn': t} for (p, t) in self.players.values()]))
+
+            return self.players[player_id]
 
     def disconnect(self, player_id: str) -> None:
         print('Player disconnect: ', player_id)

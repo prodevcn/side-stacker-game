@@ -55,6 +55,14 @@ const handlePiecePlacedWaitServer = (message, state) => {
       currentPiece: message.player === 'X' ? 'O' : 'X',
     }
   } else {
+    console.log('player', message.player)
+    console.log('current player', state.currentPiece)
+    console.log('turn', message.turn)
+    console.log('current turn', state.turn)
+    console.log('row', message.row)
+    console.log('current row', state.lastMove.row)
+    console.log('side', message.side)
+    console.log('current side', state.lastMove.side)
     console.log(
       "Received piece_placed but didn't match expected response",
       'state:',
@@ -82,6 +90,10 @@ const handlePiecePlacedWaitPlayer = (message, state) => {
       currentPiece: message.player === 'X' ? 'O' : 'X',
     }
   } else {
+    console.log('player', message.player)
+    console.log('currentPiece', state.currentPiece)
+    console.log('turn', message.turn)
+    console.log('current turn', state.turn)
     console.log(
       "Received piece_placed but didn't match expected response",
       'state:',
@@ -143,8 +155,21 @@ const handleSetMessage = (message, state) => {
     }
     case 'PIECE_PLACED_ERROR':
       return handlePiecePlacedError(message, state)
+    case 'PLAYER_REJOIN':
+      return resetBoard(message, state)
     default:
       return state
+  }
+}
+
+const resetBoard = (message, state) => {
+  const newBoard = message.board.map((l) =>
+    l.map((i) => (i === null ? undefined : i))
+  )
+  return {
+    ...state,
+    board: newBoard,
+    turn: message.turn,
   }
 }
 
