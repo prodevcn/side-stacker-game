@@ -19,12 +19,12 @@ const ResultContainer = ({ result, withBot }) => {
 
   return (
     <BasicContainer>
+      <span className="result-text">{messages[result.toLowerCase()]}</span>
       <img
         src={avatars[result.toLowerCase()]}
         alt="Result Avatar"
         className="result-avatar"
       />
-      <span className="result-text">{messages[result.toLowerCase()]}</span>
       <Link
         to={`/game${withBot ? '?bot=true' : ''}`}
         onClick={() =>
@@ -33,6 +33,9 @@ const ResultContainer = ({ result, withBot }) => {
         className="new-game-button"
       >
         Try again?
+      </Link>
+      <Link to="/" onClick={() => {}} className="go-to-home">
+        Go to home
       </Link>
     </BasicContainer>
   )

@@ -311,8 +311,9 @@ body {
 
 .result-text {
   font-family: 'Desc2';
-  font-size: medium;
+  font-size: 2rem;
   text-align: center;
+  /* color:rgba(230, 100, 101, 0.8) */
 }
 
 .new-game-button {
@@ -322,7 +323,12 @@ body {
   padding: 0.5rem;
   border-radius: 10px;;
   place-self: center;
+  text-decoration: none;
+}
 
+.go-to-home {
+  color: #334155;
+  text-decoration: none;
 }
 
 @keyframes spin {
@@ -332,6 +338,12 @@ body {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .game-board {
+    gap: 0;
   }
 }
 
