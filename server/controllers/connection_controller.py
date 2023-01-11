@@ -43,13 +43,14 @@ class GameConnectionController:
         ss.connect(player_id, type)
         
         """ for bot connection """
-        if game['with_bot']:
-            bot_id = str(uuid.uuid4()).split('_')[-1]
-            bot = Bot(ss, bot_id)
-            game['players'][bot_id] = bot
-            
-            ss.add_observer(bot.process_game_events)
-            ss.connect(bot_id, type)
+        if type == "new":
+          if game['with_bot']:
+              bot_id = str(uuid.uuid4()).split('-')[-1]
+              bot = Bot(ss, bot_id)
+              game['players'][bot_id] = bot
+              
+              ss.add_observer(bot.process_game_events)
+              ss.connect(bot_id, type)
             
 
     def handle_client_message(self, game_id, player_id, message):
